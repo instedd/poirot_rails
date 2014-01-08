@@ -27,8 +27,12 @@ module PoirotRails
     end
 
     old_logger = Rails.logger
+    unless old_logger
+      old_logger = Logger.new(STDOUT)
+      old_logger.level = Logger::DEBUG
+    end
     Rails.logger = PoirotLogger.new(old_logger)
-    Rails.logger.level = Logger::DEBUG
+    Rails.logger.level = old_logger.level
   end
 
   def self.activity_id=(value)
