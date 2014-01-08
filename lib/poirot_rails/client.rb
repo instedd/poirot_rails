@@ -4,6 +4,10 @@ module PoirotRails
       @device = device
     end
 
+    def timestamp
+      Time.now.utc.iso8601(6)
+    end
+
     def begin_activity fields
       body = {
         '_type' => 'activity',
@@ -11,7 +15,7 @@ module PoirotRails
         '@tags' => [],
         '@pid' => "#{Process.pid}.#{Thread.current.__id__}",
         '@source' => PoirotRails.source,
-        '@timestamp' => Time.now.utc.iso8601
+        '@timestamp' => timestamp
       }
       
       event = {
@@ -30,7 +34,7 @@ module PoirotRails
         '@tags' => [],
         '@pid' => "#{Process.pid}.#{Thread.current.__id__}",
         '@source' => PoirotRails.source,
-        '@timestamp' => Time.now.utc.iso8601
+        '@timestamp' => timestamp
       }
       
       event = {
@@ -50,7 +54,7 @@ module PoirotRails
         '@pid' => "#{Process.pid}.#{Thread.current.__id__}",
         '@level' => severity,
         '@source' => PoirotRails.source,
-        '@timestamp' => Time.now.utc.iso8601,
+        '@timestamp' => timestamp,
         '@activity' => PoirotRails.activity_id
       }
       

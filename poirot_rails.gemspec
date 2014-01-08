@@ -16,6 +16,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency 'zmq'
   gem.add_dependency 'guid'
   gem.add_dependency 'json'
+  gem.add_dependency 'bertrpc'
 
   gem.files         = `git ls-files`.split($/)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }

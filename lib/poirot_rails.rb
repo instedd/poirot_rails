@@ -3,6 +3,7 @@ require 'poirot_rails/poirot_logger'
 require 'poirot_rails/tee_device'
 require 'poirot_rails/zmq_device'
 require 'poirot_rails/client'
+require 'poirot_rails/bert_service'
 
 module PoirotRails
   mattr_accessor :client, :source
