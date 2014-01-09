@@ -15,6 +15,7 @@ module PoirotRails
         '@tags' => [],
         '@pid' => "#{Process.pid}.#{Thread.current.__id__}",
         '@source' => PoirotRails.source,
+        '@start' => timestamp,
         '@timestamp' => timestamp
       }
       
@@ -34,6 +35,7 @@ module PoirotRails
         '@tags' => [],
         '@pid' => "#{Process.pid}.#{Thread.current.__id__}",
         '@source' => PoirotRails.source,
+        '@end' => timestamp,
         '@timestamp' => timestamp
       }
       
