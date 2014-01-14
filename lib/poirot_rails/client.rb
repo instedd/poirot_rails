@@ -8,15 +8,18 @@ module PoirotRails
       Time.now.utc.iso8601(6)
     end
 
-    def begin_activity fields
+    def begin_activity description, fields
+      now = timestamp
+
       body = {
         '_type' => 'activity',
+        '@description' => description,
         '@fields' => fields,
         '@tags' => [],
         '@pid' => "#{Process.pid}.#{Thread.current.__id__}",
         '@source' => PoirotRails.source,
-        '@start' => timestamp,
-        '@timestamp' => timestamp
+        '@start' => now,
+        '@timestamp' => now
       }
       
       event = {
@@ -29,14 +32,16 @@ module PoirotRails
     end
 
     def end_activity fields
+      now = timestamp
+
       body = {
         '_type' => 'activity',
         '@fields' => fields,
         '@tags' => [],
         '@pid' => "#{Process.pid}.#{Thread.current.__id__}",
         '@source' => PoirotRails.source,
-        '@end' => timestamp,
-        '@timestamp' => timestamp
+        '@end' => now,
+        '@timestamp' => now
       }
       
       event = {

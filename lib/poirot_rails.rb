@@ -18,12 +18,16 @@ module PoirotRails
 
     ActiveSupport::Notifications.subscribe "start_processing.action_controller" do |*args|
       event = ActiveSupport::Notifications::Event.new *args
-      self.begin_activity event
+      payload = event.payload
+      description = "#{payload[:method]} #{payload[:path]}"
+      meta = event.as_json.with_indifferent_access
+      self.begin_activity description, meta
     end
 
     ActiveSupport::Notifications.subscribe "process_action.action_controller" do |*args|
       event = ActiveSupport::Notifications::Event.new *args
-      self.end_activity event
+      meta = event.as_json.with_indifferent_access
+      self.end_activity meta
     end
 
     old_logger = Rails.logger
@@ -43,14 +47,30 @@ module PoirotRails
     Thread.current[:activity_id]
   end
 
-  def self.begin_activity fields
-    self.activity_id = Guid.new.to_s
-    self.client.begin_activity fields
+  def self.metadata
+    Thread.current[:activity_metadata]
   end
 
-  def self.end_activity fields
-    self.client.end_activity fields
+  def self.metadata=(metadata)
+    Thread.current[:activity_metadata] = metadata
+  end
+
+  def self.add_metadata metadata
+    current_md = Thread.current[:activity_metadata] || {}
+    Thread.current[:activity_metadata] = current_md.merge metadata
+  end
+
+  def self.begin_activity description, meta
+    self.activity_id = Guid.new.to_s
+    self.metadata = meta
+    self.client.begin_activity description, meta
+  end
+
+  def self.end_activity meta
+    metadata = self.metadata.merge meta
+    self.client.end_activity metadata
     self.activity_id = nil
+    self.metadata = {}
   end
 
   def self.logentry severity, message
