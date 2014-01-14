@@ -21,9 +21,9 @@ module PoirotRails
     def wrap(kind, options, mod, func, args)
       activity_id = PoirotRails.activity_id
       if kind == :call
-        @service.send(kind, options).poirot_facade.execute_call(activity_id, mod, func, args)
+        @service.send(kind, options).poirot_bert.execute_call(activity_id, mod, func, args)
       else
-        @service.send(kind, options).poirot_facade.execute_cast(activity_id, mod, func, args)
+        @service.send(kind, options).poirot_bert.execute_cast(activity_id, mod, func, args)
       end
     end
   end
