@@ -1,4 +1,5 @@
 require 'time'
+require 'poirot_rails/activity'
 require 'poirot_rails/poirot_logger'
 require 'poirot_rails/tee_device'
 require 'poirot_rails/zmq_device'
@@ -37,44 +38,37 @@ module PoirotRails
     end
     Rails.logger = PoirotLogger.new(old_logger)
     Rails.logger.level = old_logger.level
+
+    self.current = Activity.none
   end
 
-  def self.activity_id=(value)
-    Thread.current[:activity_id] = value
-  end
-
-  def self.activity_id
-    Thread.current[:activity_id]
-  end
-
-  def self.metadata
-    Thread.current[:activity_metadata]
-  end
-
-  def self.metadata=(metadata)
-    Thread.current[:activity_metadata] = metadata
+  def self.current
+    Thread.current[:activity]
   end
 
   def self.add_metadata metadata
-    current_md = Thread.current[:activity_metadata] || {}
-    Thread.current[:activity_metadata] = current_md.merge metadata
+    self.current.merge! metadata
   end
 
   def self.begin_activity description, meta
-    self.activity_id = Guid.new.to_s
-    self.metadata = meta
+    self.current = Activity.new Guid.new.to_s, description, meta
     self.client.begin_activity description, meta
   end
 
   def self.end_activity meta
-    metadata = self.metadata.merge meta
-    self.client.end_activity metadata
-    self.activity_id = nil
-    self.metadata = {}
+    self.current.merge! meta
+    self.client.end_activity self.current.metadata
+    self.current = Activity.none
   end
 
   def self.logentry severity, message
     self.client.logentry severity, message
+  end
+
+  private
+
+  def self.current=(activity)
+    Thread.current[:activity] = activity
   end
 end
 
