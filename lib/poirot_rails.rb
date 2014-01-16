@@ -47,7 +47,7 @@ module PoirotRails
   end
 
   def self.add_metadata metadata
-    self.current.merge! metadata
+    self.current.merge! metadata if self.current
   end
 
   def self.begin_activity description, meta
