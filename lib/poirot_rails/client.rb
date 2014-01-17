@@ -12,7 +12,6 @@ module PoirotRails
       now = timestamp
 
       body = {
-        '_type' => 'activity',
         '@description' => description,
         '@fields' => fields,
         '@tags' => [],
@@ -21,7 +20,7 @@ module PoirotRails
         '@start' => now,
         '@timestamp' => now
       }
-      
+
       event = {
         type: 'begin_activity',
         id: PoirotRails.current.id,
@@ -35,15 +34,12 @@ module PoirotRails
       now = timestamp
 
       body = {
-        '_type' => 'activity',
         '@fields' => fields,
         '@tags' => [],
-        '@pid' => "#{Process.pid}.#{Thread.current.__id__}",
-        '@source' => PoirotRails.source,
         '@end' => now,
         '@timestamp' => now
       }
-      
+
       event = {
         type: 'end_activity',
         id: PoirotRails.current.id,
@@ -55,7 +51,6 @@ module PoirotRails
 
     def logentry severity, message
       body = {
-        '_type' => 'logentry',
         '@message' => message,
         '@tags' => [],
         '@pid' => "#{Process.pid}.#{Thread.current.__id__}",
@@ -64,7 +59,7 @@ module PoirotRails
         '@timestamp' => timestamp,
         '@activity' => PoirotRails.current.id
       }
-      
+
       event = {
         type: 'logentry',
         body: body

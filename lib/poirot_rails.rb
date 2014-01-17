@@ -21,14 +21,13 @@ module PoirotRails
       event = ActiveSupport::Notifications::Event.new *args
       payload = event.payload
       description = "#{payload[:method]} #{payload[:path]}"
-      meta = event.as_json.with_indifferent_access
-      self.begin_activity description, meta
+      self.begin_activity description, payload
     end
 
     ActiveSupport::Notifications.subscribe "process_action.action_controller" do |*args|
       event = ActiveSupport::Notifications::Event.new *args
-      meta = event.as_json.with_indifferent_access
-      self.end_activity meta
+      event.payload[:duration] = event.duration
+      self.end_activity event.payload
     end
 
     old_logger = Rails.logger
@@ -60,7 +59,7 @@ module PoirotRails
   end
 
   def self.logentry severity, message
-    self.client.logentry severity, message
+    self.client.logentry severity, message if message.present?
   end
 
   private

@@ -8,7 +8,7 @@ module PoirotRails
       add(UNKNOWN, msg)
     end
 
-    def add(severity, message = nil, progname = nil, &block) 
+    def add(severity, message = nil, progname = nil, &block)
       severity ||= UNKNOWN
       if severity < @level
         return true
