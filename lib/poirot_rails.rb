@@ -38,12 +38,10 @@ module PoirotRails
     end
     Rails.logger = PoirotLogger.new(old_logger)
     Rails.logger.level = old_logger.level
-
-    self.current = Activity.none
   end
 
   def self.current
-    Thread.current[:activity]
+    Thread.current[:activity] || Activity.none
   end
 
   def self.add_metadata metadata
