@@ -16,8 +16,28 @@ module PoirotRails
       @metadata.merge! more
     end
 
+    class None
+      def id
+        nil
+      end
+      
+      def description
+        "(no activity)"
+      end
+
+      def metadata
+        {}
+      end
+
+      def []=(key, value)
+      end
+      
+      def merge!(more)
+      end
+    end
+
     def self.none
-      @none ||= new nil, "(no activity)"
+      @none ||= None.new
     end
   end
 end
