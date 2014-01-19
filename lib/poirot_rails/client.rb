@@ -23,7 +23,7 @@ module PoirotRails
 
       event = {
         type: 'begin_activity',
-        id: PoirotRails.current.id,
+        id: Activity.current.id,
         body: body
       }
 
@@ -42,7 +42,7 @@ module PoirotRails
 
       event = {
         type: 'end_activity',
-        id: PoirotRails.current.id,
+        id: Activity.current.id,
         body: body
       }
 
@@ -57,7 +57,7 @@ module PoirotRails
         '@level' => severity,
         '@source' => PoirotRails.source,
         '@timestamp' => timestamp,
-        '@activity' => PoirotRails.current.id
+        '@activity' => Activity.current.id
       }
 
       event = {

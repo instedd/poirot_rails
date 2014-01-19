@@ -19,7 +19,7 @@ module PoirotRails
     end
 
     def wrap(kind, options, mod, func, args)
-      activity_id = PoirotRails.current.id
+      activity_id = Activity.current.id
       if kind == :call
         @service.send(kind, options).poirot_bert.execute_call(activity_id, mod, func, args)
       else
