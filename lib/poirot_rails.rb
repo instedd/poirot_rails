@@ -9,7 +9,7 @@ require 'poirot_rails/client'
 require 'poirot_rails/bert_service'
 
 module PoirotRails
-  mattr_accessor :client, :source
+  mattr_accessor :client, :source, :server
 
   def self.setup
     if block_given?

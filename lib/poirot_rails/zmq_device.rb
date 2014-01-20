@@ -6,7 +6,7 @@ module PoirotRails
       @zmq_context = ZMQ::Context.new
       @zmq_socket = @zmq_context.socket(ZMQ::PUB)
       @zmq_socket.setsockopt ZMQ::HWM, 50
-      @zmq_socket.connect("tcp://localhost:2120")
+      @zmq_socket.connect("tcp://#{PoirotRails.server}")
     end
 
     def write(data)
