@@ -9,14 +9,15 @@ require 'poirot_rails/client'
 require 'poirot_rails/bert_service'
 
 module PoirotRails
-  mattr_accessor :client, :source, :server
+  mattr_accessor :client, :source, :server, :debug
 
   def self.setup
     if block_given?
       yield self
     end
 
-    log_device = TeeDevice.new("#{Rails.root}/log/poirot_#{Rails.env}.log", ZMQDevice.new)
+    log_device = ZMQDevice.new
+    log_device = TeeDevice.new("#{Rails.root}/log/poirot_#{Rails.env}.log", log_device) if debug
     self.client = Client.new(log_device)
 
     ActiveSupport::Notifications.subscribe "process_action.action_controller" do |*args|

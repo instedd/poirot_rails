@@ -9,6 +9,7 @@ module PoirotRails
           PoirotRails.setup do |poirot|
             poirot.source = config["source"]
             poirot.server = config["server"]
+            poirot.debug = config["debug"]
           end
         end
       else
