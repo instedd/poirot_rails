@@ -5,13 +5,14 @@ module PoirotRails
     end
 
     def call(env)
+      path = env['REQUEST_PATH'] || env['ORIGINAL_FULLPATH']
       metadata = {
         method: env['REQUEST_METHOD'],
-        path: env['REQUEST_PATH'],
+        path: path,
         remote_address: env['REMOTE_ADDR'],
         user_agent: env['HTTP_USER_AGENT']
       }
-      Activity.start("#{env['REQUEST_METHOD']} #{env['REQUEST_PATH']}", metadata) do
+      Activity.start("#{env['REQUEST_METHOD']} #{path}", metadata) do
         @app.call(env)
       end
     end
