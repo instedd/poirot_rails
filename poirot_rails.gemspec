@@ -6,7 +6,7 @@ require 'poirot_rails/version'
 Gem::Specification.new do |gem|
   gem.name          = "poirot_rails"
   gem.version       = PoirotRails::VERSION
-  gem.authors       = ["Gustavo Gira¡ldez"]
+  gem.authors       = ["Gustavo Giraldez"]
   gem.email         = ["ggiraldez@manas.com.ar"]
   gem.description   = %q{}
   gem.summary       = %q{}
