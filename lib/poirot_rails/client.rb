@@ -51,7 +51,7 @@ module PoirotRails
 
     def logentry severity, message
       body = {
-        '@message' => message,
+        '@message' => message[0..1024],
         '@tags' => [],
         '@pid' => "#{Process.pid}.#{Thread.current.__id__}",
         '@level' => severity,
