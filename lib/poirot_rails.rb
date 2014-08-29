@@ -1,4 +1,5 @@
 require 'time'
+require 'guid'
 require 'poirot_rails/railtie'
 require 'poirot_rails/middleware'
 require 'poirot_rails/activity'
