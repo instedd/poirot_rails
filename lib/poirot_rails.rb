@@ -10,7 +10,7 @@ require 'poirot_rails/client'
 require 'poirot_rails/bert_service'
 
 module PoirotRails
-  mattr_accessor :client, :source, :server, :debug
+  mattr_accessor :client, :source, :server, :debug, :mute
 
   def self.setup
     if block_given?
@@ -37,7 +37,7 @@ module PoirotRails
   end
 
   def self.logentry severity, message
-    self.client.logentry severity, message if message.present?
+    Activity.current.logentry severity, message if message.present?
   end
 end
 

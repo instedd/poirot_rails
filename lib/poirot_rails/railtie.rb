@@ -10,6 +10,7 @@ module PoirotRails
             poirot.source = config["source"]
             poirot.server = config["server"]
             poirot.debug = config["debug"]
+            poirot.mute = config["mute"]
           end
         end
       else

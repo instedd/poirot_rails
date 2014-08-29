@@ -27,6 +27,15 @@ module PoirotRails
       end
     end
 
+    def self.mute
+      Activity.push MUTE
+      begin
+        yield
+      ensure
+        Activity.pop
+      end
+    end
+
     def self.push(activity)
       activity.parent = Thread.current[:activity]
       Thread.current[:activity] = activity
@@ -39,20 +48,16 @@ module PoirotRails
     end
 
     def self.current
-      Thread.current[:activity] || Activity.none
+      Thread.current[:activity] || NONE
     end
 
-    class None
-      def id
-        nil
-      end
+    def logentry(severity, message)
+      PoirotRails.client.logentry severity, message if message.present?
+    end
 
-      def parent
-        nil
-      end
-
-      def description
-        "(no activity)"
+    class Null < self
+      def initialize(name)
+        super(nil, name)
       end
 
       def metadata
@@ -66,8 +71,12 @@ module PoirotRails
       end
     end
 
-    def self.none
-      @none ||= None.new
+    class << NONE = Null.new("(no activity)")
+    end
+
+    class << MUTE = Null.new("(mute activity)")
+      def logentry(severity, message)
+      end
     end
   end
 end

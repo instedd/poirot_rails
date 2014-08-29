@@ -9,6 +9,7 @@ module PoirotRails
     end
 
     def begin_activity description, fields
+      return unless Activity.current.id
       now = timestamp
 
       body = {
@@ -31,6 +32,7 @@ module PoirotRails
     end
 
     def end_activity fields
+      return unless Activity.current.id
       now = timestamp
 
       body = {
