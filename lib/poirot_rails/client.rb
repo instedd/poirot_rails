@@ -51,7 +51,7 @@ module PoirotRails
       @device.write event.to_json + "\n"
     end
 
-    def logentry severity, message
+    def logentry severity, message, tags = nil, metadata = nil
       body = {
         '@message' => message[0..1024],
         '@tags' => [],
@@ -61,6 +61,9 @@ module PoirotRails
         '@timestamp' => timestamp,
         '@activity' => Activity.current.id
       }
+
+      body['@tags'] = tags if tags
+      body['@fields'] = metadata if metadata
 
       event = {
         type: 'logentry',

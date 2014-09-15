@@ -51,8 +51,8 @@ module PoirotRails
       Thread.current[:activity] || NONE
     end
 
-    def logentry(severity, message)
-      PoirotRails.client.logentry severity, message if message.present?
+    def logentry(severity, message, tags = nil, metadata = nil)
+      PoirotRails.client.logentry(severity, message, tags, metadata) if message.present?
     end
 
     class Null < self
