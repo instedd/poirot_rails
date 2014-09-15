@@ -12,6 +12,8 @@ require 'poirot_rails/bert_service'
 module PoirotRails
   mattr_accessor :client, :source, :server, :debug, :mute
 
+  SQL_IGNORED_PAYLOADS = %w(SCHEMA EXPLAIN CACHE)
+
   def self.setup
     if block_given?
       yield self
@@ -25,6 +27,18 @@ module PoirotRails
       event = ActiveSupport::Notifications::Event.new *args
       event.payload[:duration] = event.duration
       Activity.current.merge! event.payload
+    end
+
+    ActiveSupport::Notifications.subscribe "sql.active_record" do |*args|
+      event = ActiveSupport::Notifications::Event.new *args
+      next if SQL_IGNORED_PAYLOADS.include?(event.payload[:name])
+
+      description = "#{event.payload[:name]} (#{event.duration.round(2)} ms) #{event.payload[:sql]}"
+      metadata = {
+        name: event.payload[:name],
+        duration: event.duration
+      }
+      Activity.current.logentry(:info, description, [:sql], metadata)
     end
 
     old_logger = Rails.logger
