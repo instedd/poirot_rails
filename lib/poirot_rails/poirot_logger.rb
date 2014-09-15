@@ -23,8 +23,11 @@ module PoirotRails
         end
       end
 
-      clean_message = message.gsub(%r{\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]},'')
-      PoirotRails.logentry format_severity(severity).downcase, clean_message
+      unless severity == DEBUG
+        clean_message = message.gsub(%r{\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]},'')
+        PoirotRails.logentry format_severity(severity).downcase, clean_message
+      end
+
       @delegate.add(severity, message, progname)
     end
   end
