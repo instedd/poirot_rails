@@ -72,6 +72,17 @@ module PoirotRails
 
       @device.write event.to_json + "\n"
     end
+
+    class Null
+      def begin_activity *args
+      end
+
+      def end_activity *args
+      end
+
+      def logentry *args
+      end
+    end
   end
 end
 

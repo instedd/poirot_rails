@@ -54,5 +54,7 @@ module PoirotRails
   def self.logentry severity, message
     Activity.current.logentry severity, message if message.present?
   end
+
+  self.client = Client::Null.new
 end
 
