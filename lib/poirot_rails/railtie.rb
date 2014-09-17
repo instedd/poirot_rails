@@ -5,7 +5,8 @@ module PoirotRails
       if config_path.exist?
         config = YAML.load_file(config_path)[Rails.env]
         if config && config["enabled"]
-          app.middleware.insert_after "ActionDispatch::RemoteIp", "PoirotRails::Middleware"
+          app.middleware.insert_before "Rails::Rack::Logger", "PoirotRails::Middleware"
+          app.middleware.insert_after "ActionDispatch::RemoteIp", "PoirotRails::Middleware::RemoteIp"
 
           PoirotRails.setup do |poirot|
             poirot.source = config["source"]

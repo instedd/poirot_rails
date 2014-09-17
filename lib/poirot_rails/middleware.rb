@@ -5,21 +5,17 @@ module PoirotRails
     end
 
     def call(env)
-      request = ActionDispatch::Request.new(env)
-
+      path = env['REQUEST_PATH'] || env['ORIGINAL_FULLPATH']
       metadata = {
-        method: request.request_method,
-        path: request.path,
-        query_string: request.query_string,
-        user_agent: request.user_agent,
-        remote_address: request.remote_ip,
-        referer: request.referer
+        method: env['REQUEST_METHOD'],
+        path: path,
+        user_agent: env['HTTP_USER_AGENT']
       }
 
-      if muted?(request.path)
+      if muted?(path)
         Activity.mute { @app.call(env) }
       else
-        Activity.start("#{request.request_method} #{request.path}", metadata) do
+        Activity.start("#{env['REQUEST_METHOD']} #{path}", metadata) do
           @app.call(env)
         end
       end
@@ -28,6 +24,17 @@ module PoirotRails
     def muted?(path)
       return false unless PoirotRails.mute
       PoirotRails.mute.any? { |mute| path.start_with?(mute) }
+    end
+
+    class RemoteIp
+      def initialize(app)
+        @app = app
+      end
+
+      def call(env)
+        Activity.current.merge! remote_address: ActionDispatch::Request.new(env).remote_ip
+        @app.call(env)
+      end
     end
 
   end
