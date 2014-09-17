@@ -32,7 +32,10 @@ module PoirotRails
       end
 
       def call(env)
-        Activity.current.merge! remote_address: ActionDispatch::Request.new(env).remote_ip
+        request = ActionDispatch::Request.new(env)
+        Activity.current.merge! remote_address: request.remote_ip,
+          query_string: request.query_string,
+          referer: request.referer
         @app.call(env)
       end
     end
