@@ -13,7 +13,7 @@ Gem::Specification.new do |gem|
   gem.homepage      = "https://bitbucket.org/instedd/poirot_rails"
 
   gem.add_dependency 'rails', '>= 3.2'
-  gem.add_dependency 'zmq'
+  gem.add_dependency 'ffi-rzmq'
   gem.add_dependency 'guid'
   gem.add_dependency 'json'
   gem.add_dependency 'bertrpc'
