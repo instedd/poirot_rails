@@ -5,13 +5,14 @@ end
 
 if defined?(Resque)
   module Resque
-    def enqueue_to_with_poirot(queue, klass, *args)
+    def push_with_poirot(queue, item)
       activity_id = PoirotRails::Activity.current.id
       link_id = Guid.new.to_s
-      PoirotRails::Activity.current.logentry(:info, "Enqueue '#{klass}'", ["resque"], link_id: link_id)
-      enqueue_to_without_poirot(queue, klass, activity_id, link_id, *args)
+      item[:args].unshift activity_id, link_id
+      PoirotRails::Activity.current.logentry(:info, "Enqueue '#{item[:class]}'", ["resque"], link_id: link_id)
+      push_without_poirot(queue, item)
     end
-    alias_method_chain :enqueue_to, :poirot
+    alias_method_chain :push, :poirot
   end
 
   module PoirotJobWrapper
