@@ -27,6 +27,16 @@ module PoirotRails
       end
     end
 
+    def self.resume(activity_id)
+      current_activity = Thread.current[:activity]
+      begin
+        Thread.current[:activity] = new(activity_id, nil)
+        yield
+      ensure
+        Thread.current[:activity] = current_activity
+      end
+    end
+
     def self.mute
       Activity.push MUTE
       begin
