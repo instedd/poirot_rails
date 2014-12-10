@@ -85,7 +85,7 @@ module PoirotRails
     end
 
     class << MUTE = Null.new("(mute activity)")
-      def logentry(severity, message)
+      def logentry(severity, message, tags = nil, metadata = nil)
       end
     end
   end
