@@ -9,6 +9,7 @@ require 'poirot_rails/zmq_device'
 require 'poirot_rails/client'
 require 'poirot_rails/bert_service'
 require 'poirot_rails/delayed_job'
+require 'poirot_rails/resque'
 
 module PoirotRails
   mattr_accessor :client, :source, :server, :debug, :mute
