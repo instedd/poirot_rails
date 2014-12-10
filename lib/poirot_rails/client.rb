@@ -22,6 +22,12 @@ module PoirotRails
         '@timestamp' => now
       }
 
+      body['@parent'] = Activity.current.parent.id if Activity.current.parent
+      if fields[:async]
+        body['@async'] = true
+        fields.delete :async
+      end
+
       event = {
         type: 'begin_activity',
         id: Activity.current.id,
