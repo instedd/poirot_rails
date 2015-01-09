@@ -21,7 +21,12 @@ if defined?(Resque)
         def perform_with_poirot(activity_id, link_id, *args)
           PoirotRails::Activity.resume(activity_id) do
             PoirotRails::Activity.start(self.to_s, link_id: link_id, async: true) do
-              perform_without_poirot(*args)
+              begin
+                perform_without_poirot(*args)
+              rescue Exception => ex
+                PoirotRails::Activity.current.logentry(:error, "Unhandled exception: #{ex}")
+                raise
+              end
             end
           end
         end
