@@ -1,7 +1,7 @@
 module PoirotRails
   class Activity
     attr_reader :id, :description, :metadata
-    attr_accessor :parent
+    attr_accessor :parent, :from
 
     def initialize(id, description, metadata = {})
       @id = id
@@ -17,8 +17,13 @@ module PoirotRails
       @metadata.merge! more
     end
 
-    def self.start(description, metadata = {})
+    def self.start(description, metadata = {}, &block)
+      start_from(description, nil, metadata, &block)
+    end
+
+    def self.start_from(description, from, metadata = {})
       activity = Activity.new(Guid.new.to_s, description, metadata)
+      activity.from = from
       Activity.push activity
       begin
         yield

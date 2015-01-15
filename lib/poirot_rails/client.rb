@@ -23,6 +23,7 @@ module PoirotRails
       }
 
       body['@parent'] = Activity.current.parent.id if Activity.current.parent
+      body['@from'] = Activity.current.from if Activity.current.from
       if fields[:async]
         body['@async'] = true
         fields.delete :async

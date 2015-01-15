@@ -12,10 +12,15 @@ module PoirotRails
         user_agent: env['HTTP_USER_AGENT']
       }
 
+      from_activity = env['HTTP_X_POIROT_ACTIVITY_ID']
+      if link_id = env['HTTP_X_POIROT_LINK_ID']
+        metadata[:link_id] = link_id
+      end
+
       if muted?(path)
         Activity.mute { @app.call(env) }
       else
-        Activity.start("#{env['REQUEST_METHOD']} #{path}", metadata) do
+        Activity.start_from("#{env['REQUEST_METHOD']} #{path}", from_activity, metadata) do
           @app.call(env)
         end
       end
