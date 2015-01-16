@@ -26,7 +26,7 @@ module PoirotRails
       activity.from = from
       Activity.push activity
       begin
-        yield
+        yield activity
       ensure
         Activity.pop
       end

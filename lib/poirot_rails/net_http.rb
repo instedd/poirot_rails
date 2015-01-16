@@ -2,14 +2,31 @@ require "net/http"
 
 class Net::HTTP
   def request_with_poirot(request, *args, &block)
-    activity_id = PoirotRails::Activity.current.id
-    if activity_id
-      link_id = Guid.new.to_s
+    if activity_id = PoirotRails::Activity.current.id
       request["X-Poirot-Activity-Id"] = activity_id
-      request["X-Poirot-Link-Id"] = link_id
-      PoirotRails::Activity.current.logentry(:info, "#{request.method} http#{use_ssl? ? "s" : ""}://#{addr_port()}#{request.path}", ["net", "http"], link_id: link_id)
+      description = "#{request.method} http#{use_ssl? ? "s" : ""}://#{addr_port()}#{request.path}"
+      metadata = {
+        host: addr_port(),
+        ssl: use_ssl?,
+        path: request.path,
+        method: request.method
+      }
+
+      PoirotRails::Activity.start(description, metadata) do |activity|
+        response = request_without_poirot(request, *args, &block)
+        activity[:response_code] = response.code
+
+        if response.code.starts_with?('4') || response.code.starts_with?('5')
+          activity.logentry(:error, "#{response.code} #{response.message}")
+        else
+          activity[:content_type] = response['content-type']
+        end
+
+        response
+      end
+    else
+      request_without_poirot(request, *args, &block)
     end
-    request_without_poirot(request, *args, &block)
   end
 
   alias_method_chain :request, :poirot
