@@ -16,7 +16,7 @@ module PoirotRails
 
           PoirotRails.setup do |poirot|
             poirot.source = config["source"]
-            poirot.server = config["server"]
+            poirot.server = ENV['POIROT_SERVER'] || config["server"]
             poirot.debug = config["debug"]
             poirot.mute = config["mute"]
           end
