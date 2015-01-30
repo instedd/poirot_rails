@@ -2,8 +2,19 @@ require 'ffi-rzmq'
 
 module PoirotRails
   class ZMQDevice
+    class << self
+      def connected_devices
+        @connected_devices ||= []
+      end
+
+      def reconnect
+        @connected_devices.each &:connect
+      end
+    end
+
     def initialize
       connect
+      PoirotRails::ZMQDevice.connected_devices << self
 
       if defined?(::Resque)
         ::Resque.after_fork { connect }
@@ -30,6 +41,7 @@ module PoirotRails
     end
 
     def close
+      PoirotRails::ZMQDevice.connected_devices.delete(self)
       @zmq_socket.close
     end
   end
