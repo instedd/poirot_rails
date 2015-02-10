@@ -2,7 +2,7 @@ require "net/http"
 
 class Net::HTTP
   def request_with_poirot(request, *args, &block)
-    if activity_id = PoirotRails::Activity.current.id
+    if started? && activity_id = PoirotRails::Activity.current.id
       description = "#{request.method} http#{use_ssl? ? "s" : ""}://#{addr_port()}#{request.path}"
       metadata = {
         host: addr_port(),
