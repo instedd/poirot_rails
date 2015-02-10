@@ -3,7 +3,6 @@ require "net/http"
 class Net::HTTP
   def request_with_poirot(request, *args, &block)
     if activity_id = PoirotRails::Activity.current.id
-      request["X-Poirot-Activity-Id"] = activity_id
       description = "#{request.method} http#{use_ssl? ? "s" : ""}://#{addr_port()}#{request.path}"
       metadata = {
         host: addr_port(),
@@ -13,6 +12,7 @@ class Net::HTTP
       }
 
       PoirotRails::Activity.start(description, metadata) do |activity|
+        request["X-Poirot-Activity-Id"] = activity.id
         response = request_without_poirot(request, *args, &block)
         activity[:response_code] = response.code
 
