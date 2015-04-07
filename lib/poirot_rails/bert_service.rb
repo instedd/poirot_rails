@@ -4,8 +4,8 @@ module PoirotRails
 
     attr_reader :service
 
-    def initialize(host, port, timeout = nil)
-      @service = BERTRPC::Service.new(host, port, timeout)
+    def initialize(service)
+      @service = service
     end
 
     def_delegators :@service, :host, :host=, :port, :port=, :timeout, :timeout=
