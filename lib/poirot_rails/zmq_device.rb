@@ -8,7 +8,7 @@ module PoirotRails
       end
 
       def reconnect
-        @connected_devices.each &:connect
+        connected_devices.each &:connect
       end
     end
 
