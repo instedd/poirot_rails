@@ -10,6 +10,7 @@ require 'poirot_rails/client'
 require 'poirot_rails/bert_service'
 require 'poirot_rails/delayed_job'
 require 'poirot_rails/resque'
+require 'poirot_rails/active_job'
 require 'poirot_rails/net_http'
 require 'poirot_rails/httpclient'
 
