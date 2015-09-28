@@ -3,7 +3,7 @@ module PoirotRails
     config.before_initialize do |app|
       config_path = Rails.root + "config/poirot.yml"
       if config_path.exist?
-        config = YAML.load_file(config_path)[Rails.env]
+        config = YAML.load(ERB.new(File.read(config_path)).result)[Rails.env]
         if config && config["enabled"]
           # Insert the first middleware right after the logger so catched
           # exceptions are logged in the context of the activity
