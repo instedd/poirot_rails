@@ -1,5 +1,3 @@
-require 'ffi-rzmq'
-
 module PoirotRails
   class ZMQDevice
     class << self
@@ -13,6 +11,12 @@ module PoirotRails
     end
 
     def initialize
+      begin
+        require 'ffi-rzmq'
+      rescue LoadError
+        raise "Could not require 'ffi-rzmq'. Please, add `gem 'ffi-rzmq'` to your Gemfile to use ZMQ logging with Poirot."
+      end
+
       connect
       PoirotRails::ZMQDevice.connected_devices << self
 
