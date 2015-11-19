@@ -19,10 +19,12 @@ module PoirotRails
             poirot.server = ENV['POIROT_SERVER'] || config["server"]
             poirot.debug = config["debug"]
             poirot.mute = config["mute"]
+            poirot.stdout = config["stdout"]
+            poirot.suppress_rails_log = config["suppress_rails_log"]
           end
         end
       else
-        puts "Poirot gem is installed but not configured. Please add config/poirot.yml to enable"
+        puts "Poirot gem is installed but not configured. Please add config/poirot.yml to enable."
       end
     end
   end

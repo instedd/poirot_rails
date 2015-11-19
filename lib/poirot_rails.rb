@@ -15,7 +15,7 @@ require 'poirot_rails/net_http'
 require 'poirot_rails/httpclient'
 
 module PoirotRails
-  mattr_accessor :client, :source, :server, :debug, :mute
+  mattr_accessor :client, :source, :server, :debug, :mute, :stdout, :suppress_rails_log
 
   SQL_IGNORED_PAYLOADS = %w(SCHEMA EXPLAIN CACHE)
 
@@ -24,9 +24,11 @@ module PoirotRails
       yield self
     end
 
-    log_device = ZMQDevice.new
-    log_device = TeeDevice.new("#{Rails.root}/log/poirot_#{Rails.env}.log", log_device) if debug
-    self.client = Client.new(log_device)
+    devices = []
+    devices << "#{Rails.root}/log/poirot_#{Rails.env}.log" if debug
+    devices << ZMQDevice.new if server
+    devices << STDOUT if stdout
+    self.client = Client.new(TeeDevice.new(*devices))
 
     ActiveSupport::Notifications.subscribe "process_action.action_controller" do |*args|
       event = ActiveSupport::Notifications::Event.new *args
@@ -47,12 +49,8 @@ module PoirotRails
     end
 
     old_logger = Rails.logger
-    unless old_logger
-      old_logger = Logger.new(STDOUT)
-      old_logger.level = Logger::DEBUG
-    end
-    Rails.logger = PoirotLogger.new(old_logger)
-    Rails.logger.level = old_logger.level
+    Rails.logger = PoirotLogger.new(suppress_rails_log ? nil : old_logger)
+    Rails.logger.level = old_logger.try(:level) || Logger::DEBUG
   end
 
   def self.logentry severity, message

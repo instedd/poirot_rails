@@ -28,7 +28,7 @@ module PoirotRails
         PoirotRails.logentry format_severity(severity).downcase, clean_message
       end
 
-      @delegate.add(severity, message, progname)
+      @delegate.add(severity, message, progname) if @delegate
     end
   end
 end
