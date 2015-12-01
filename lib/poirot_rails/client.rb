@@ -35,7 +35,7 @@ module PoirotRails
         body: body
       }
 
-      @device.write event.to_json + "\n"
+      @device.write JSON.dump(event) + "\n"
     end
 
     def end_activity fields
@@ -55,7 +55,7 @@ module PoirotRails
         body: body
       }
 
-      @device.write event.to_json + "\n"
+      @device.write JSON.dump(event) + "\n"
     end
 
     def logentry severity, message, tags = nil, metadata = nil
@@ -77,7 +77,7 @@ module PoirotRails
         body: body
       }
 
-      @device.write event.to_json + "\n"
+      @device.write JSON.dump(event) + "\n"
     end
 
     class Null
