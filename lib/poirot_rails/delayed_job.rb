@@ -3,7 +3,9 @@ if defined?(Delayed::Job)
     module Backend
       module Base
         module ClassMethods
-          def enqueue_with_poirot(*args)
+          alias_method :enqueue_without_poirot, :enqueue
+
+          def enqueue(*args)
             if activity_id = PoirotRails::Activity.current.id
               link_id = Guid.new.to_s
               args[0].instance_variable_set :@_poirot_activity_id, activity_id
@@ -12,11 +14,11 @@ if defined?(Delayed::Job)
             end
             enqueue_without_poirot(*args)
           end
-
-          alias_method_chain :enqueue, :poirot
         end
 
-        def invoke_job_with_poirot
+        alias_method :invoke_job_without_poirot, :invoke_job
+
+        def invoke_job
           if activity_id = payload_object.instance_variable_get(:@_poirot_activity_id)
             PoirotRails::Activity.resume(activity_id) do
               link_id = payload_object.instance_variable_get(:@_poirot_link_id)
@@ -26,8 +28,6 @@ if defined?(Delayed::Job)
             invoke_job_in_new_activity
           end
         end
-
-        alias_method_chain :invoke_job, :poirot
 
         def invoke_job_in_new_activity(link_id = nil)
           metadata = { async: true, attempt: attempts + 1 }

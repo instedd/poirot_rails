@@ -5,7 +5,9 @@ end
 
 if defined?(HTTPClient)
   class HTTPClient
-    def do_request_with_poirot(method, uri, query, body, header, &block)
+    alias_method :do_request_without_poirot, :do_request
+
+    def do_request(method, uri, query, body, header, &block)
       if activity_id = PoirotRails::Activity.current.id
         description = "#{method.to_s.upcase} #{uri}"
         metadata = {
@@ -33,7 +35,5 @@ if defined?(HTTPClient)
         do_request_without_poirot(method, uri, query, body, header, &block)
       end
     end
-
-    alias_method_chain :do_request, :poirot
   end
 end
